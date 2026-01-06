@@ -40,13 +40,20 @@ def ui():
         <pre id="result">Waiting...</pre>
 
         <script>
+            const apiKey = localStorage.getItem("apiKey");
+            console.log("api key", apiKey)
+
+            if (!apiKey) {
+                window.location.href = "/";
+            }
             async function analyze() {
                 const text = document.getElementById("text").value;
 
                 const response = await fetch("/sentiment/", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "X-API-Key": apiKey
                     },
                     body: JSON.stringify({ text })
                 });

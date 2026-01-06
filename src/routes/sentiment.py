@@ -1,9 +1,10 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel
 from models.sentiment_model import SentimentModel
+from utils.auth import authenticate
 
 router = APIRouter()
-model = SentimentModel()  # single instance
+model = SentimentModel()
 
 class SentimentRequest(BaseModel):
     text: str
@@ -11,7 +12,19 @@ class SentimentRequest(BaseModel):
 class SentimentResponse(BaseModel):
     label: str
     confidence: float
+    user_id: str
+    tier: str
 
 @router.post("/", response_model=SentimentResponse)
-def analyze_sentiment(request: SentimentRequest):
-    return model.predict(request.text)
+def analyze_sentiment(
+    request: Request,
+    payload: SentimentRequest,
+    user=Depends(authenticate)
+):
+    result = model.predict(payload.text)
+
+    return {
+        **result,
+        "user_id": user["user_id"],
+        "tier": user["tier"]
+    }

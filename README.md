@@ -1,5 +1,5 @@
 # ai-middleware-personal-project
-A personal deep dive for getting a feel for developing api driven ai language models.
+A personal deep dive for getting a feel for developing api driven ai language models, I am pulling the distilbert-base-uncased-finetuned-sst-2-english model from huggingface to act as a AI blackbox model to interact with. This is not a study of fine-tuning the model, rather more of exploring and experimenting with developing an api structure to interact with the model to set up a system for a user to use it on a front end ui.
 
 
 To run this project, first download the required libraries:
