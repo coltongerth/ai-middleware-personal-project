@@ -32,7 +32,8 @@ def ui():
     </head>
     <body>
         <h2>Sentiment Analysis Tester</h2>
-        <textarea id="text" placeholder="Enter text here..."></textarea>
+        <textarea id="text" placeholder="Enter text here..." oninput="updateCount()"></textarea>
+        <div id="counter"></div>
         <br />
         <button onclick="analyze()">Analyze</button>
 
@@ -41,10 +42,28 @@ def ui():
 
         <script>
             const apiKey = localStorage.getItem("apiKey");
-            console.log("api key", apiKey)
+            
+
 
             if (!apiKey) {
                 window.location.href = "/";
+            }
+
+
+            const tier = localStorage.getItem("userTier");
+
+            const MAX_CHARS = tier === "premium" ? 100 : 20;
+
+            function updateCount() {
+                const textarea = document.getElementById("text");
+                const counter = document.getElementById("counter");
+
+                if (textarea.value.length > MAX_CHARS) {
+                    textarea.value = textarea.value.slice(0, MAX_CHARS);
+                }
+
+                counter.textContent =
+                    `${textarea.value.length} / ${MAX_CHARS} characters (${tier})`;
             }
             async function analyze() {
                 const text = document.getElementById("text").value;

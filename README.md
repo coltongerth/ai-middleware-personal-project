@@ -14,4 +14,12 @@ This will run the project locally, which you will be able to interact with on yo
 
 http://127.0.0.1:8000/
 
+Once it's running, you will be directed to a login page, to access the model, you will need to log in with either a free account or a premium account using the following api "keys"
+
+free-key-123
+
+or 
+
+premium-key-123
+
 If you've made it this far, have fun playing with it, there's not much beef to it, but it's been a fun project to work on!

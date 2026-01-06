@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, HTTPException
 from pydantic import BaseModel
 from models.sentiment_model import SentimentModel
 from utils.auth import authenticate
+from utils.limits import TIER_LIMITS
 
 router = APIRouter()
 model = SentimentModel()
@@ -9,22 +10,24 @@ model = SentimentModel()
 class SentimentRequest(BaseModel):
     text: str
 
-class SentimentResponse(BaseModel):
-    label: str
-    confidence: float
-    user_id: str
-    tier: str
-
-@router.post("/", response_model=SentimentResponse)
+@router.post("/")
 def analyze_sentiment(
     request: Request,
     payload: SentimentRequest,
     user=Depends(authenticate)
 ):
+    tier = user["tier"]
+    limits = TIER_LIMITS[tier]
+
+    if len(payload.text) > limits["max_chars"]:
+        raise HTTPException(
+            status_code=403,
+            detail=f"{tier} tier allows max {limits['max_chars']} characters"
+        )
+
     result = model.predict(payload.text)
 
     return {
         **result,
-        "user_id": user["user_id"],
-        "tier": user["tier"]
+        "tier": tier
     }
